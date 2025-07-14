@@ -1,0 +1,35 @@
+# .github/workflows/gitflow_create_version.yml
+
+name: "Créer le tag de version"
+on:
+  push:
+    branches:
+      - feature/*
+      - release/*
+      - hotfix/*
+      - main
+      - dev
+jobs:
+  get_semver_version:
+    name: Calculer la version et appliquer le tag
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+      contents: write
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Obtenir version
+      id: obtenir_version
+      #uses: MCN-CQEN/ceai-cqen-scripts-lib/actions/gitflow/get-semver 
+      uses: MCN-CQEN/ceai-cqen-scripts-lib/actions/gitflow/get-semver@feature/actions-gitflow
+      # FIXME : ⚠️ Ce lien ne fonctionnera pas tant que la PR ne sera pas mergée : en attendant, utiliser le lien MCN-CQEN/ceai-cqen-scripts-lib/tree/feature/actions-gitflow/actions/gitflow/get-semver
+      
+    - name: Créer le tag
+      id: creer_tag
+      #uses: MCN-CQEN/ceai-cqen-scripts-lib/actions/gitflow/create-version-tag 
+      uses: MCN-CQEN/ceai-cqen-scripts-lib/actions/gitflow/create-version-tag@feature/actions-gitflow
+      # FIXME : ⚠️ Ce lien ne fonctionnera pas tant que la PR ne sera pas mergée : en attendant, utiliser le lien MCN-CQEN/ceai-cqen-scripts-lib/tree/feature/actions-gitflow/actions/gitflow/create-version-tag
+      with:
+        semVer: ${{ steps.obtenir_version.outputs.semVer }}
